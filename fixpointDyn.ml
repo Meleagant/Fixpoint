@@ -3,6 +3,7 @@
 (** Fixpoint analysis of a dynamically explored equation system *)
 
 open Format
+open Camllib
 open FixpointType
 
 (*  ============================================================= *)

@@ -2,6 +2,8 @@
 
 (** Fixpoint analysis of an equation system: inference of thresholds *)
 
+open Camllib
+
 (*  ********************************************************************** *)
 (** {2 Public datatypes} *)
 (*  ********************************************************************** *)

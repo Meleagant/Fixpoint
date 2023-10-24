@@ -2,6 +2,7 @@
 
 (** Fixpoint analysis of an equation system: standard method *)
 
+open Camllib
 open FixpointType
 
 (*  ********************************************************************** *)

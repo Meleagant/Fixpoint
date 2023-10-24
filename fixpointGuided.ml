@@ -5,6 +5,7 @@
 (** Technique of [Gopand and Reps, SAS'07]  *)
 
 open Format
+open Camllib
 open FixpointType
 
 (** Compute set of backedges *)

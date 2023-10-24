@@ -1,5 +1,7 @@
 (* Bertrand Jeannet, INRIA. This file is released under LGPL license. *)
 
+open Camllib
+
 (** Fixpoint analysis of an equation system: types *)
 
 (*  ********************************************************************** *)

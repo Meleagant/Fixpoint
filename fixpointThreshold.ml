@@ -6,6 +6,7 @@
 (** {2 Public datatypes} *)
 (*  ********************************************************************** *)
 
+open Camllib
 open FixpointType
 
 type ('vertex,'hedge,'threshold) parameter = {

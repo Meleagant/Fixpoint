@@ -4,6 +4,7 @@
 
 (** Technique of [Gopand and Reps, SAS'07]  *)
 
+open Camllib
 open FixpointType
 
 val analysis :

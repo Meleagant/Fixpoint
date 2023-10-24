@@ -2,6 +2,7 @@
 
 (** Fixpoint analysis of a dynamically explored equation system *)
 
+open Camllib
 open FixpointType
 
 val init :

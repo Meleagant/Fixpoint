@@ -3,6 +3,7 @@
 (** Fixpoint analysis of an equation system *)
 
 open Format
+open Camllib
 open FixpointType
 
 (*  ********************************************************************** *)
