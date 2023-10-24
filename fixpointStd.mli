@@ -12,23 +12,23 @@ val is_tvertex :
   ('vertex, 'hedge, 'abstract, 'arc) graph ->
   'vertex array -> bool
     (** Does the array of vertices belong to the graph, all with
-	non bottom values ? *)
+        non bottom values ? *)
 
 val treach_of_tvertex :
   descend:bool ->
   ('vertex, 'hedge, 'attr, 'arc) graph ->
   'vertex array -> 'attr array
     (** Return the array of abstract values associated to the
-	vertices *)
+        vertices *)
 
 val update_workingsets :
   ('vertex, 'hedge, 'attr, 'arc) graph ->
   hedge:bool ->
   'vertex -> unit
     (** Update working sets assuming that the abstract value
-	associated to the vertex has been modified. If
-	[hedge=true], then also consider the working set
-	associated to hyperhedges. *)
+        associated to the vertex has been modified. If
+        [hedge=true], then also consider the working set
+        associated to hyperhedges. *)
 
 (*  ********************************************************************** *)
 (** {2 Initialisation of fixpoint computation} *)
@@ -52,9 +52,9 @@ val accumulate_vertex :
   ('vertex, 'hedge, 'attr, 'arc) graph ->
   ('vertex, 'hedge) strategy_vertex -> 'attr attr -> bool
     (** Compute the least upper bound of the current value of the
-	vertex/variable with the values propagated by the incoming
-	hyperedges belonging to the working set. Returns [true] if
-	the value is strictly increasing. *)
+        vertex/variable with the values propagated by the incoming
+        hyperedges belonging to the working set. Returns [true] if
+        the value is strictly increasing. *)
 
 val propagate_vertex :
   ('vertex, 'hedge, 'attr, 'arc) manager ->
@@ -83,9 +83,9 @@ val descend :
   ('vertex, 'hedge, 'attr, 'arc) graph -> ('vertex, 'hedge) strategy -> bool
     (** (Rather internal)
 
-	[descend manager graph strategy] performs descending
-	iterations on the part of the graph represented by the
-	strategy *)
+        [descend manager graph strategy] performs descending
+        iterations on the part of the graph represented by the
+        strategy *)
 
 val process_toplevel_strategy :
   ('vertex, 'hedge, 'attr, 'arc) manager ->
@@ -93,29 +93,29 @@ val process_toplevel_strategy :
   ('vertex, 'hedge) strategy -> bool * bool
     (** (Rather internal function)
 
-	[process_toplevel_strategy manager graph strategy]:
-	assuming that [graph] has been created with the function
-	{!init}, this function solves iteratively the fixpoint
-	equation, using [manager] for interpreting the equation
-	system [graph], and the strategy [strategy] for the
-	iteration order and the application of widening.
+        [process_toplevel_strategy manager graph strategy]:
+        assuming that [graph] has been created with the function
+        {!init}, this function solves iteratively the fixpoint
+        equation, using [manager] for interpreting the equation
+        system [graph], and the strategy [strategy] for the
+        iteration order and the application of widening.
 
-	Descending iterations are applied separately to each
-	upper-level component of the strategy, before processing
-	the next such component in the strategy.
+        Descending iterations are applied separately to each
+        upper-level component of the strategy, before processing
+        the next such component in the strategy.
 
-	The first returned Boolean indicates if some growth has
-	been observed (before descending iteration), and the
-	second one indicates if some reduction has been observed
-	after descending iteration. *)
+        The first returned Boolean indicates if some growth has
+        been observed (before descending iteration), and the
+        second one indicates if some reduction has been observed
+        after descending iteration. *)
 
 val output_of_graph :
   ('vertex, 'hedge, 'abstract,'arc) graph ->
   ('vertex, 'hedge, 'abstract,'arc) output
     (** (Rather internal function)
 
-	Getting the result of the analysis from the internal
-	representation. *)
+        Getting the result of the analysis from the internal
+        representation. *)
 
 val analysis :
   ('vertex, 'hedge, 'attr, 'arc) manager ->
@@ -123,9 +123,9 @@ val analysis :
   ('vertex, 'hedge) strategy ->
   ('vertex, 'hedge, 'attr, 'arc) output
     (** Main user function: [analysis manager equation_graph sinit
-	strategy] takes a graph giving the structure of the equation
-	system, a manager indicating how to interpret the equation
-	system, a (super)set of the variables to be initialized to a
-	non-empty value, and an iteration strategy. It returns the
-	result of the full analysis with an object of type
-	{! Fixpoint.output}. *)
+        strategy] takes a graph giving the structure of the equation
+        system, a manager indicating how to interpret the equation
+        system, a (super)set of the variables to be initialized to a
+        non-empty value, and an iteration strategy. It returns the
+        result of the full analysis with an object of type
+        {! Fixpoint.output}. *)

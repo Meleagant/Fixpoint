@@ -30,9 +30,9 @@ let make_threshold_manager
     join = begin fun v set1 set2 -> PSette.union set1 set2 end;
     join_list =
       begin fun v lset ->
-	List.fold_left
-	  PSette.union
-	  (PSette.empty parameter.compare) lset
+        List.fold_left
+          PSette.union
+          (PSette.empty parameter.compare) lset
       end;
     widening = begin fun v set1 set2 -> failwith "" end;
     odiff = Some(begin fun v set1 set2 -> PSette.diff set1 set2 end);
@@ -69,25 +69,25 @@ let process_main_strategy
     (begin fun elt ->
       match elt with
       | Ilist.Atome(strategy_vertex) ->
-	  ignore (process_vertex strategy_vertex)
+          ignore (process_vertex strategy_vertex)
       | Ilist.List(strategy) ->
-	  begin try
-	    let growing = ref false in
-	    let revstrategy = Ilist.rev strategy in
-	    for i=1 to iteration_nb do
-	      growing := false;
-	      Ilist.iter
-		(begin fun _ _ strategy_vertex ->
-		  let change = process_vertex strategy_vertex in
-		  growing := !growing || change;
-		end)
-		(if (i mod 2)=1 then strategy else revstrategy)
-	      ;
-	      if not !growing then raise Exit;
-	    done
-	  with Exit -> ()
-	  end;
-	  ()
+          begin try
+            let growing = ref false in
+            let revstrategy = Ilist.rev strategy in
+            for i=1 to iteration_nb do
+              growing := false;
+              Ilist.iter
+                (begin fun _ _ strategy_vertex ->
+                  let change = process_vertex strategy_vertex in
+                  growing := !growing || change;
+                end)
+                (if (i mod 2)=1 then strategy else revstrategy)
+              ;
+              if not !growing then raise Exit;
+            done
+          with Exit -> ()
+          end;
+          ()
     end)
     sstrategy
   ;
@@ -114,8 +114,8 @@ let inference
   Ilist.iter
     (begin fun _ _ svertex ->
       if svertex.widen then
-	let attr = PSHGraph.attrvertex graph svertex.vertex in
-	PHashhe.add res svertex.vertex attr.reach
+        let attr = PSHGraph.attrvertex graph svertex.vertex in
+        PHashhe.add res svertex.vertex attr.reach
     end)
     strategy;
   res

@@ -123,7 +123,7 @@ let print_strategy_vertex
     v.widen
     man.print_vertex v.vertex
     (Print.list ~first:"@[<h>[" ~sep:"," ~last:"]@]"
-	man.print_hedge)
+        man.print_hedge)
     v.hedges
 
 let print_strategy
@@ -161,12 +161,12 @@ let make_strategy_vertex
   let hedges =
     PSette.fold
       (begin fun hedge res ->
-	let takeit = match priority with
-	  | None -> true
-	  | Some(PSHGraph.Filter filter) -> filter hedge
-	  | Some(PSHGraph.Priority p) -> (p hedge)>=0
-	in
-	if takeit then hedge::res else res
+        let takeit = match priority with
+          | None -> true
+          | Some(PSHGraph.Filter filter) -> filter hedge
+          | Some(PSHGraph.Priority p) -> (p hedge)>=0
+        in
+        if takeit then hedge::res else res
       end)
       spredhedges []
   in
@@ -199,7 +199,7 @@ let make_strategy_default
     Ilist.map
       (make_strategy_iteration ~widening_start ~widening_descend)
       (begin fun flag _ vertex ->
-	make_strategy_vertex ?priority graph flag vertex
+        make_strategy_vertex ?priority graph flag vertex
       end)
       scfc
   in
@@ -229,9 +229,9 @@ let ilist_map_condense f (it,ll) =
     | [] -> res
     | Ilist.Atome(_)::ll -> parcours res ll
     | Ilist.List(it2,ll2)::ll ->
-	let nit2 = f it2 in
-	let nll2 = parcours [] ll2 in
-	parcours ((Ilist.List(nit2, nll2))::res) ll
+        let nit2 = f it2 in
+        let nll2 = parcours [] ll2 in
+        parcours ((Ilist.List(nit2, nll2))::res) ll
   in
   Ilist.rev ((f it),(parcours [] ll))
 
@@ -241,9 +241,9 @@ let stat_iteration_merge (it,ll) =
     | [] -> ()
     | (Ilist.Atome _)::ll -> parcours ll
     | (Ilist.List(it,ll2)::ll) ->
-	res.nb <- max res.nb it.nb;
-	res.stable <- res.stable && it.stable;
-	parcours ll2; parcours ll
+        res.nb <- max res.nb it.nb;
+        res.stable <- res.stable && it.stable;
+        parcours ll2; parcours ll
   in
   parcours ll;
   res
@@ -350,10 +350,10 @@ let print_workingsets
     =
   let hashprint print fmt x =
       PHashhe.print
-	~first:"[@[<hov>" ~last:"@]]"
-	~firstbind:"" ~sepbind:"" ~lastbind:""
-	print (fun _ _ -> ())
-	fmt x
+        ~first:"[@[<hov>" ~last:"@]]"
+        ~firstbind:"" ~sepbind:"" ~lastbind:""
+        print (fun _ _ -> ())
+        fmt x
   in
   let info = PSHGraph.info graph in
   fprintf fmt "@[<v>workvertex = %a@ workhedge = %a"
@@ -363,7 +363,7 @@ let print_workingsets
   begin match info.iinfodyn with
   | Some(dyn) ->
       fprintf fmt "@ addhedge = %a"
-	(hashprint man.print_hedge) dyn.iaddhedge
+        (hashprint man.print_hedge) dyn.iaddhedge
   | None -> ()
   end;
   fprintf fmt "@]"
@@ -396,9 +396,9 @@ let set2_of_strategy
   Ilist.fold_left
     (begin fun (res,resw) _ _ v ->
       if v.widen then
-	res,(PSette.add v.vertex resw)
+        res,(PSette.add v.vertex resw)
       else
-	(PSette.add v.vertex res),resw
+        (PSette.add v.vertex res),resw
     end)
     (empty,empty) strategy
 
@@ -418,69 +418,69 @@ let dot_graph
   | None -> ()
   | Some dot_fmt ->
       let (set,setw) = match strategy with
-	| None -> let e = PSette.empty comparev in (e,e)
-	| Some strategy -> set2_of_strategy comparev strategy
+        | None -> let e = PSette.empty comparev in (e,e)
+        | Some strategy -> set2_of_strategy comparev strategy
       in
       let info = PSHGraph.info graph in
       let fvertexstyle = begin fun v ->
-	let vertexstyle =
-	  if begin match vertex with
-	  | None -> false
-	  | Some vertex -> (graph.PSHGraph.compare.PSHGraph.comparev v vertex) = 0
-	  end
-	  then
-	    vertexstyle^",style=filled,fillcolor=coral1"
-	  else if PSette.mem v setw then
-	    vertexstyle^",style=filled,fillcolor=red1"
-	  else if PSette.mem v set then
-	    vertexstyle^",style=filled,fillcolor=orange1"
-	  else
-	    vertexstyle
-	in
-	let vertexstyle =
-	  if PHashhe.mem info.iworkvertex v then
-	    vertexstyle^",fontcolor=blue3"
-	  else
-	    vertexstyle
-	in
-	vertexstyle
+        let vertexstyle =
+          if begin match vertex with
+          | None -> false
+          | Some vertex -> (graph.PSHGraph.compare.PSHGraph.comparev v vertex) = 0
+          end
+          then
+            vertexstyle^",style=filled,fillcolor=coral1"
+          else if PSette.mem v setw then
+            vertexstyle^",style=filled,fillcolor=red1"
+          else if PSette.mem v set then
+            vertexstyle^",style=filled,fillcolor=orange1"
+          else
+            vertexstyle
+        in
+        let vertexstyle =
+          if PHashhe.mem info.iworkvertex v then
+            vertexstyle^",fontcolor=blue3"
+          else
+            vertexstyle
+        in
+        vertexstyle
       end
       in
       let fhedgestyle = begin fun h ->
-	let hedgestyle =
-	  if PHashhe.mem info.iworkhedge h then
-	    hedgestyle^",fontcolor=blue3"
-	  else
-	    hedgestyle
-	in
-	hedgestyle
+        let hedgestyle =
+          if PHashhe.mem info.iworkhedge h then
+            hedgestyle^",fontcolor=blue3"
+          else
+            hedgestyle
+        in
+        hedgestyle
       end
       in
       PSHGraph.print_dot
-	~titlestyle
-	~style
-	~fvertexstyle
-	~fhedgestyle
-	~title
-	(fun fmt vertex ->
-	  fprintf fmt "\"%s\""
-	    (Print.escaped ~linebreak:'n'
-	      (Print.sprintf "%a" man.dot_vertex vertex)))
-	(fun fmt hedge ->
-	  fprintf fmt "\"%s\""
-	    (Print.escaped ~linebreak:'n'
-	      (Print.sprintf "%a" man.dot_hedge hedge)))
-	(fun fmt vertex attr ->
-	  fprintf fmt "%s"
-	    (Print.escaped ~linebreak:'n'
-	      (Print.sprintf ~margin:40 "%a@.%a"
-		man.dot_attrvertex vertex
-		man.print_abstract attr.reach)))
-	(fun fmt hedge arc ->
-	  fprintf fmt "%s"
-	    (Print.escaped ~linebreak:'n'
-	      (Print.sprintf ~margin:40 "%a@.%a"
-		man.dot_attrhedge hedge
-		man.print_arc arc.arc)))
-	dot_fmt
-	graph
+        ~titlestyle
+        ~style
+        ~fvertexstyle
+        ~fhedgestyle
+        ~title
+        (fun fmt vertex ->
+          fprintf fmt "\"%s\""
+            (Print.escaped ~linebreak:'n'
+              (Print.sprintf "%a" man.dot_vertex vertex)))
+        (fun fmt hedge ->
+          fprintf fmt "\"%s\""
+            (Print.escaped ~linebreak:'n'
+              (Print.sprintf "%a" man.dot_hedge hedge)))
+        (fun fmt vertex attr ->
+          fprintf fmt "%s"
+            (Print.escaped ~linebreak:'n'
+              (Print.sprintf ~margin:40 "%a@.%a"
+                man.dot_attrvertex vertex
+                man.print_abstract attr.reach)))
+        (fun fmt hedge arc ->
+          fprintf fmt "%s"
+            (Print.escaped ~linebreak:'n'
+              (Print.sprintf ~margin:40 "%a@.%a"
+                man.dot_attrhedge hedge
+                man.print_arc arc.arc)))
+        dot_fmt
+        graph

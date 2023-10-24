@@ -21,19 +21,19 @@ let strategy_backedge
     (begin fun _ svertex ->
       seen := PSette.add svertex.vertex !seen;
       List.iter
-	(begin fun hedge ->
-	  let spred = PSHGraph.predvertex graph hedge in
-	  let is_backedge =
-	    Array.fold_left
-	      (begin fun is_backedge vertex ->
-		is_backedge || not (PSette.mem vertex !seen)
-	      end)
-	      false
-	      spred
-	  in
-	  if is_backedge then PHashhe.replace backedge hedge
-	end)
-	svertex.hedges;
+        (begin fun hedge ->
+          let spred = PSHGraph.predvertex graph hedge in
+          let is_backedge =
+            Array.fold_left
+              (begin fun is_backedge vertex ->
+                is_backedge || not (PSette.mem vertex !seen)
+              end)
+              false
+              spred
+          in
+          if is_backedge then PHashhe.replace backedge hedge
+        end)
+        svertex.hedges;
     end)
     strategy
   ;
@@ -54,34 +54,34 @@ let add_active_hedges
     PSHGraph.fold_hedge graph
     (begin fun hedge attrhedge ~pred ~succ change ->
       if not (PHashhe.mem activehedge hedge) then begin
-	let active =
-	  if attrhedge.aempty then begin
-	    let tpredvertex = PSHGraph.predvertex graph hedge in
-	    if FixpointStd.is_tvertex graph tpredvertex then begin
-	      let treach = FixpointStd.treach_of_tvertex ~descend:false graph tpredvertex in
-	      let (arc,post) = manager.apply hedge treach in
-	      let succvertex = PSHGraph.succvertex graph hedge in
-	      assert ((Array.length succvertex)=1);
-	      attrhedge.aempty <- manager.is_bottom succvertex.(0) post;
-	      not attrhedge.aempty
-	    end
-	    else
-	      false
-	  end
-	  else
-	    true
-	in
-	if active then begin
-	  PHashhe.replace activehedge hedge ();
-	  if manager.accumulate then PHashhe.replace info.iworkhedge hedge ();
-	  let succvertex = PSHGraph.succvertex graph hedge in
-	  assert ((Array.length succvertex)=1);
-	  PHashhe.replace info.iworkvertex succvertex.(0) ();
-	end;
-	change || active
+        let active =
+          if attrhedge.aempty then begin
+            let tpredvertex = PSHGraph.predvertex graph hedge in
+            if FixpointStd.is_tvertex graph tpredvertex then begin
+              let treach = FixpointStd.treach_of_tvertex ~descend:false graph tpredvertex in
+              let (arc,post) = manager.apply hedge treach in
+              let succvertex = PSHGraph.succvertex graph hedge in
+              assert ((Array.length succvertex)=1);
+              attrhedge.aempty <- manager.is_bottom succvertex.(0) post;
+              not attrhedge.aempty
+            end
+            else
+              false
+          end
+          else
+            true
+        in
+        if active then begin
+          PHashhe.replace activehedge hedge ();
+          if manager.accumulate then PHashhe.replace info.iworkhedge hedge ();
+          let succvertex = PSHGraph.succvertex graph hedge in
+          assert ((Array.length succvertex)=1);
+          PHashhe.replace info.iworkvertex succvertex.(0) ();
+        end;
+        change || active
       end
       else
-	change
+        change
     end)
     false
   in
@@ -111,40 +111,40 @@ let analysis
     (* (1) loop *)
     while !loop do
       if manager.print_analysis then begin
-	fprintf manager.print_fmt "*** Propagation...@."
+        fprintf manager.print_fmt "*** Propagation...@."
       end;
       ignore (FixpointStd.process_toplevel_strategy manager graph strategy_flat);
       if !first then begin
-	first := false;
-	PSHGraph.iter_hedge graph
-	  (begin fun hedge attrhedge ~pred ~succ ->
-	    if not attrhedge.aempty then
-	      PHashhe.add activehedge hedge ()
-	  end)
+        first := false;
+        PSHGraph.iter_hedge graph
+          (begin fun hedge attrhedge ~pred ~succ ->
+            if not attrhedge.aempty then
+              PHashhe.add activehedge hedge ()
+          end)
       end;
       let change =
-	(if manager.accumulate then
-	  (PHashhe.length info.iworkhedge) > 0
-	else
-	  true)
-	&& add_active_hedges manager graph activehedge
+        (if manager.accumulate then
+          (PHashhe.length info.iworkhedge) > 0
+        else
+          true)
+        && add_active_hedges manager graph activehedge
       in
       if change then begin
-	let strategy = make_strategy (PHashhe.mem activehedge) in
-	if manager.print_analysis then begin
-	  fprintf manager.print_fmt "*** Fixpoint...@."
-	end;
-	ignore
-	  (FixpointStd.process_toplevel_strategy manager graph strategy);
-	loop :=
-	  if manager.accumulate then
-	    (PHashhe.length info.iworkhedge) > 0
-	  else
-	    true
-	;
+        let strategy = make_strategy (PHashhe.mem activehedge) in
+        if manager.print_analysis then begin
+          fprintf manager.print_fmt "*** Fixpoint...@."
+        end;
+        ignore
+          (FixpointStd.process_toplevel_strategy manager graph strategy);
+        loop :=
+          if manager.accumulate then
+            (PHashhe.length info.iworkhedge) > 0
+          else
+            true
+        ;
       end
       else
-	loop := false
+        loop := false
     done;
   end)
   ;

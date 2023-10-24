@@ -47,8 +47,8 @@ type ('vertex,'hedge,'abstract,'arc) manager = {
       (** Binary and n-ary join operation *)
   mutable widening : 'vertex -> 'abstract -> 'abstract -> 'abstract;
       (** Apply widening at the given point, with the two arguments.
-	  Widening will always be applied with first argument being included
-	  in the second one. *)
+          Widening will always be applied with first argument being included
+          in the second one. *)
   mutable odiff :  ('vertex -> 'abstract -> 'abstract -> 'abstract) option;
       (** Sound approximation of set difference (optional) *)
 
@@ -59,8 +59,8 @@ type ('vertex,'hedge,'abstract,'arc) manager = {
   mutable apply : 'hedge -> 'abstract array -> 'arc * 'abstract;
       (** Apply the function indexed by [hedge] to the array of arguments.
 
-	  It returns the new abstract value, but also a user-defined information
-	  that will be associated to the hyperedge in the result. *)
+          It returns the new abstract value, but also a user-defined information
+          that will be associated to the hyperedge in the result. *)
 
   mutable print_vertex : Format.formatter -> 'vertex -> unit;
   mutable print_hedge : Format.formatter -> 'hedge -> unit;
@@ -69,11 +69,11 @@ type ('vertex,'hedge,'abstract,'arc) manager = {
       (** Printing functions *)
 
   mutable accumulate : bool;
-	(** If true, during ascending phase, compute the union of old reachable
-	    value with growing incoming hyperedges. If false, recompute all
-	    incoming hyperedges. *)
+        (** If true, during ascending phase, compute the union of old reachable
+            value with growing incoming hyperedges. If false, recompute all
+            incoming hyperedges. *)
   mutable print_fmt : Format.formatter;
-	(** Typically equal to [Format.std_formatter] *)
+        (** Typically equal to [Format.std_formatter] *)
   mutable print_analysis : bool;
   mutable print_component : bool;
   mutable print_step : bool;
@@ -83,15 +83,15 @@ type ('vertex,'hedge,'abstract,'arc) manager = {
       (** Printing Options *)
 
   mutable dot_fmt : Format.formatter option;
-	(** [Some fmt] enables DOT output. You can set dummy
-	    values to the fields below if you always set [None]
-	    and you do not want DOT output. *)
+        (** [Some fmt] enables DOT output. You can set dummy
+            values to the fields below if you always set [None]
+            and you do not want DOT output. *)
   mutable dot_vertex : Format.formatter -> 'vertex -> unit;
       (** Print vertex identifiers in DOT format *)
   mutable dot_hedge : Format.formatter -> 'hedge -> unit;
       (** Print hyperedge identifiers in DOT format (vertices and
-	  hyperedges identifiers should be different, as they are
-	  represented by DOT vertices *)
+          hyperedges identifiers should be different, as they are
+          represented by DOT vertices *)
   mutable dot_attrvertex : Format.formatter -> 'vertex -> unit;
       (** Print the displayed information in boxes *)
   mutable dot_attrhedge : Format.formatter -> 'hedge -> unit;
@@ -105,9 +105,9 @@ type ('vertex,'hedge,'abstract,'arc) manager = {
 type ('vertex,'hedge) equation =
   'vertex -> ('hedge, 'vertex array * 'vertex) PMappe.t
     (** Function that explores dynamically an equation system.
-	[equation vertex] returns a map hat associates to each
-	successor hyperedge a pair of composed of the set of
-	predecessor vertices, and the successor vertex.  *)
+        [equation vertex] returns a map hat associates to each
+        successor hyperedge a pair of composed of the set of
+        predecessor vertices, and the successor vertex.  *)
 
 (*  ====================================================================== *)
 (** {3 Iteration strategies} *)
@@ -153,25 +153,25 @@ type ('vertex,'hedge) strategy =
       - update [5] and loop until stabilization;
       - update [6] and ends the analysis.
 
-	Moreover, to each (imbricated) list is associated a record
-	of type [strategy_iteration], which indicates when to
-	start the widening, and the maximum number of descending
-	iterations.
+        Moreover, to each (imbricated) list is associated a record
+        of type [strategy_iteration], which indicates when to
+        start the widening, and the maximum number of descending
+        iterations.
 
-	Some observations on this example:
+        Some observations on this example:
 
-	- The user should specify correctly the strategy.  Two
-	vertices belonging to the same connex component should
-	always belong to a loop. Here, if there is an edge from
-	[6] to [2], the loop will not be iterated.
-	- A vertex may appear more than once in the strategy, if it is useful.
-	- Definition of the set of widening point is independent from the order
-	- of application, here. it is alos the user-responsability to ensure that
-	- the computation will end.
+        - The user should specify correctly the strategy.  Two
+        vertices belonging to the same connex component should
+        always belong to a loop. Here, if there is an edge from
+        [6] to [2], the loop will not be iterated.
+        - A vertex may appear more than once in the strategy, if it is useful.
+        - Definition of the set of widening point is independent from the order
+        - of application, here. it is alos the user-responsability to ensure that
+        - the computation will end.
 
-	So-called stabilization loops can be recursive, like that: [[1; [2;
-	[3;4]; [5]]; 6]], where the loop [[3;4]] needs to be (temporarily stable)
-	before going on with [5].
+        So-called stabilization loops can be recursive, like that: [[1; [2;
+        [3;4]; [5]]; 6]], where the loop [[3;4]] needs to be (temporarily stable)
+        before going on with [5].
 
     *)
 
@@ -181,15 +181,15 @@ val print_strategy_vertex :
   ('a, 'b, 'c, 'd) manager ->
   Format.formatter -> ('a, 'b) strategy_vertex -> unit
       (** [print_strategy_vertex man fmt sv] prints an object of type
-	  [strategy_vertex], using the manager [man] for printing vertices and
-	  hyperedges.  The output has the form [(boolean,vertex,[list of list of
-	  hedges])].  *)
+          [strategy_vertex], using the manager [man] for printing vertices and
+          hyperedges.  The output has the form [(boolean,vertex,[list of list of
+          hedges])].  *)
 
 val print_strategy :
   ('a, 'b, 'c, 'd) manager -> Format.formatter -> ('a, 'b) strategy -> unit
       (** [print_strategy_vertex man fmt sv] prints an object of type
-	  [strategy], using the manager [man] for printing vertices and
-	  hyperedges. *)
+          [strategy], using the manager [man] for printing vertices and
+          hyperedges. *)
 
 val make_strategy_iteration :
   ?widening_start:int -> ?widening_descend:int -> unit -> strategy_iteration
@@ -315,4 +315,4 @@ val dot_graph :
   ('a, 'b, 'c, 'd) manager ->
   ('a, 'b, 'c, 'd) graph -> title:string -> unit
     (** Prints internal graph on the (optional) formatter
-	[man.dot_fmt], see type {!manager}. *)
+        [man.dot_fmt], see type {!manager}. *)

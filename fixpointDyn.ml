@@ -77,9 +77,9 @@ let init
     (begin fun vertex ->
       let reach = manager.abstract_init vertex in
       let attr = {
-	reach = reach;
-	diff = reach;
-	empty = false
+        reach = reach;
+        diff = reach;
+        empty = false
       }
       in
       PSHGraph.add_vertex graph vertex attr
@@ -123,51 +123,51 @@ let propagate
   begin try
     while true do
       if manager.print_postpre then begin
-	fprintf manager.print_fmt "  Iteration@   iaddhegde = %a@ "
-	  (PHashhe.print manager.print_hedge (fun fmt _ ->())) dyn.iaddhedge;
+        fprintf manager.print_fmt "  Iteration@   iaddhegde = %a@ "
+          (PHashhe.print manager.print_hedge (fun fmt _ ->())) dyn.iaddhedge;
       end;
       PHashhe.iter
-	(begin fun hedge (tpredvertex,succvertex) ->
-	  if FixpointStd.is_tvertex graph tpredvertex then begin
-	    let succ_added =
-	      add_hedge manager graph hedge ~pred:tpredvertex ~succ:succvertex
-	    in
-	    if manager.print_postpre then fprintf manager.print_fmt "  Adding hedge %a %a@ "
-	      (Print.array manager.print_vertex) tpredvertex
-	      manager.print_hedge hedge
-	    ;
-	    if succ_added
-	    then newsucc := succvertex :: !newsucc
-	    else newhedge := hedge :: !newhedge
-	    ;
-	    PHashhe.replace info.iworkhedge hedge ();
-	    PHashhe.replace info.iworkvertex succvertex ();
-	  end
-	end)
-	dyn.iaddhedge
+        (begin fun hedge (tpredvertex,succvertex) ->
+          if FixpointStd.is_tvertex graph tpredvertex then begin
+            let succ_added =
+              add_hedge manager graph hedge ~pred:tpredvertex ~succ:succvertex
+            in
+            if manager.print_postpre then fprintf manager.print_fmt "  Adding hedge %a %a@ "
+              (Print.array manager.print_vertex) tpredvertex
+              manager.print_hedge hedge
+            ;
+            if succ_added
+            then newsucc := succvertex :: !newsucc
+            else newhedge := hedge :: !newhedge
+            ;
+            PHashhe.replace info.iworkhedge hedge ();
+            PHashhe.replace info.iworkvertex succvertex ();
+          end
+        end)
+        dyn.iaddhedge
       ;
       PHashhe.clear dyn.iaddhedge;
       if !newsucc <> [] then begin
-	List.iter
-	  (begin fun vertex ->
-	    let svertex = {
-	      vertex = vertex;
-	      hedges = PSette.elements (PSHGraph.predhedge graph vertex);
-	      widen = false
-	    }
-	    in
-	    ignore (FixpointStd.process_vertex
-	      manager graph ~widening:false svertex)
-	  end)
-	  !newsucc
-	;
-	newsucc := []
+        List.iter
+          (begin fun vertex ->
+            let svertex = {
+              vertex = vertex;
+              hedges = PSette.elements (PSHGraph.predhedge graph vertex);
+              widen = false
+            }
+            in
+            ignore (FixpointStd.process_vertex
+              manager graph ~widening:false svertex)
+          end)
+          !newsucc
+        ;
+        newsucc := []
       end
       else
-	raise Exit
+        raise Exit
       ;
       if manager.print_postpre && manager.dot_fmt<>None then
-	dot_graph manager graph ~title:"End Iteration"
+        dot_graph manager graph ~title:"End Iteration"
     done;
   with Exit -> ()
   end;
@@ -179,29 +179,29 @@ let propagate
       (Print.list manager.print_hedge) !newhedge;
     List.iter
       (begin fun hedge ->
-	let tpredvertex = PSHGraph.predvertex graph hedge in
-	if FixpointStd.is_tvertex graph tpredvertex then begin
-	  let succ = PSHGraph.succvertex graph hedge in
-	  let vertex = succ.(0) in
-	  let treach = FixpointStd.treach_of_tvertex ~descend:false graph tpredvertex in
-	  let (arc,post) = manager.apply hedge treach in
-	  let attrhedge = PSHGraph.attrhedge graph hedge in
-	  attrhedge.aempty <- manager.is_bottom vertex post;
-	  if not attrhedge.aempty then begin
-	    PHashhe.replace info.iworkvertex succ.(0) ();
-	  end
-	end
+        let tpredvertex = PSHGraph.predvertex graph hedge in
+        if FixpointStd.is_tvertex graph tpredvertex then begin
+          let succ = PSHGraph.succvertex graph hedge in
+          let vertex = succ.(0) in
+          let treach = FixpointStd.treach_of_tvertex ~descend:false graph tpredvertex in
+          let (arc,post) = manager.apply hedge treach in
+          let attrhedge = PSHGraph.attrhedge graph hedge in
+          attrhedge.aempty <- manager.is_bottom vertex post;
+          if not attrhedge.aempty then begin
+            PHashhe.replace info.iworkvertex succ.(0) ();
+          end
+        end
       end)
       !newhedge
     ;
     let toremove = PSHGraph.fold_hedge graph
       (begin fun hedge arc ~pred ~succ toremove ->
-	if arc.aempty then begin
-	  PHashhe.remove info.iworkhedge hedge;
-	  hedge::toremove
-	end
-	else
-	  toremove
+        if arc.aempty then begin
+          PHashhe.remove info.iworkhedge hedge;
+          hedge::toremove
+        end
+        else
+          toremove
       end)
       []
     in
@@ -243,12 +243,12 @@ let fixpoint
       let strategy = make_strategy graph in
       let (growing,reducing) = FixpointStd.process_toplevel_strategy manager graph strategy in
       if guided then begin
-	notstable := reducing;
-	PHashhe.clear info.iworkvertex;
-	PHashhe.clear info.iworkhedge;
+        notstable := reducing;
+        PHashhe.clear info.iworkvertex;
+        PHashhe.clear info.iworkhedge;
       end
       else begin
-	change := growing || (PHashhe.length  dyn.iaddhedge) > 0;
+        change := growing || (PHashhe.length  dyn.iaddhedge) > 0;
       end
     end
   done;
@@ -297,26 +297,26 @@ let equation_of_graph
     let succhedge = PSHGraph.succhedge graph vertex in
     let map = match filter with
       | None ->
-	  PMappe.mapofset
-	    (begin fun (hedge:'hedge) ->
-	      let predvertex = PSHGraph.predvertex graph hedge in
-	      let succvertex = PSHGraph.succvertex graph hedge in
-	      assert ((Array.length succvertex) = 1);
-	      (predvertex,succvertex.(0))
-	    end)
-	    succhedge
+          PMappe.mapofset
+            (begin fun (hedge:'hedge) ->
+              let predvertex = PSHGraph.predvertex graph hedge in
+              let succvertex = PSHGraph.succvertex graph hedge in
+              assert ((Array.length succvertex) = 1);
+              (predvertex,succvertex.(0))
+            end)
+            succhedge
       | Some p ->
-	  PSette.fold
-	    (begin fun (hedge:'hedge) map ->
-	      let predvertex = PSHGraph.predvertex graph hedge in
-	      let succvertex = PSHGraph.succvertex graph hedge in
-	      assert ((Array.length succvertex) = 1);
-	      PMappe.add
-		hedge (predvertex,succvertex.(0))
-		map
-	    end)
-	    succhedge
-	    (PMappe.empty graph.PSHGraph.compare.PSHGraph.compareh)
+          PSette.fold
+            (begin fun (hedge:'hedge) map ->
+              let predvertex = PSHGraph.predvertex graph hedge in
+              let succvertex = PSHGraph.succvertex graph hedge in
+              assert ((Array.length succvertex) = 1);
+              PMappe.add
+                hedge (predvertex,succvertex.(0))
+                map
+            end)
+            succhedge
+            (PMappe.empty graph.PSHGraph.compare.PSHGraph.compareh)
     in
     map
   end
@@ -340,27 +340,27 @@ let graph_of_equation
     let succhedge = equation vertex in
     PMappe.iter
       (begin fun succhedge (tpredvertex,succvertex) ->
-	let allpredcreated =
-	  Array.fold_left
-	    (begin fun res predvertex ->
-	      res && (PSHGraph.is_vertex graph predvertex)
-	    end)
-	    true tpredvertex
-	in
-	if allpredcreated then begin
-	  let takeit = match filter with
-	    | None -> true
-	    | Some p -> p succhedge
-	  in
-	  if takeit then begin
-	    if not (PSHGraph.is_vertex graph succvertex) then
-	      explore succvertex;
-	    if not (PSHGraph.is_hedge graph succhedge) then
-	      PSHGraph.add_hedge graph
-		succhedge (make_attrhedge succhedge)
-		~pred:tpredvertex ~succ:[|succvertex|]
-	  end
-	end
+        let allpredcreated =
+          Array.fold_left
+            (begin fun res predvertex ->
+              res && (PSHGraph.is_vertex graph predvertex)
+            end)
+            true tpredvertex
+        in
+        if allpredcreated then begin
+          let takeit = match filter with
+            | None -> true
+            | Some p -> p succhedge
+          in
+          if takeit then begin
+            if not (PSHGraph.is_vertex graph succvertex) then
+              explore succvertex;
+            if not (PSHGraph.is_hedge graph succhedge) then
+              PSHGraph.add_hedge graph
+                succhedge (make_attrhedge succhedge)
+                ~pred:tpredvertex ~succ:[|succvertex|]
+          end
+        end
       end)
       succhedge
   in

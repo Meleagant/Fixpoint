@@ -20,8 +20,8 @@ let is_tvertex
   try
     Array.iter
       (begin fun vertex ->
-	let attr = PSHGraph.attrvertex graph vertex in
-	if attr.empty then raise Exit;
+        let attr = PSHGraph.attrvertex graph vertex in
+        if attr.empty then raise Exit;
       end)
       tvertex
     ;
@@ -44,8 +44,8 @@ let treach_of_tvertex
   else
     Array.map
       (begin fun vertex ->
-	let attr = PSHGraph.attrvertex graph vertex in
-	attr.reach
+        let attr = PSHGraph.attrvertex graph vertex in
+        attr.reach
       end)
       tvertex
 
@@ -64,27 +64,27 @@ let update_workingsets
   | None ->
       let seth = PSHGraph.succhedge graph vertex in
       PSette.iter
-	(begin fun (h:'hedge) ->
-	  if hedge then PHashhe.replace info.iworkhedge h ();
-	  let succ = PSHGraph.succvertex graph h in
-	  assert ((Array.length succ)=1);
-	  PHashhe.replace info.iworkvertex succ.(0) ();
-	end)
-	seth
+        (begin fun (h:'hedge) ->
+          if hedge then PHashhe.replace info.iworkhedge h ();
+          let succ = PSHGraph.succvertex graph h in
+          assert ((Array.length succ)=1);
+          PHashhe.replace info.iworkvertex succ.(0) ();
+        end)
+        seth
       ;
   | Some(dyn) ->
       let maph = dyn.iequation vertex in
       PMappe.iter
-	(begin fun h ((tpredvertex,succvertex) as tpredsucc) ->
-	  if (PSHGraph.is_hedge graph h) then begin
-	    if hedge then PHashhe.replace info.iworkhedge h ();
-	    PHashhe.replace info.iworkvertex succvertex ();
-	  end
-	  else begin
-	    PHashhe.replace dyn.iaddhedge h tpredsucc;
-	  end
-	end)
-	maph
+        (begin fun h ((tpredvertex,succvertex) as tpredsucc) ->
+          if (PSHGraph.is_hedge graph h) then begin
+            if hedge then PHashhe.replace info.iworkhedge h ();
+            PHashhe.replace info.iworkvertex succvertex ();
+          end
+          else begin
+            PHashhe.replace dyn.iaddhedge h tpredsucc;
+          end
+        end)
+        maph
   end
 
 (*  ********************************************************************** *)
@@ -173,8 +173,8 @@ let av_print_result manager graph vertex attr growing =
     dot_graph manager graph
       ~vertex
       ~title:(
-	Print.sprintf "processed (acc) %a"
-	  manager.dot_vertex vertex
+        Print.sprintf "processed (acc) %a"
+          manager.dot_vertex vertex
       )
   ;
   ()
@@ -200,22 +200,22 @@ let accumulate_vertex
   List.iter
     (begin fun hedge ->
       if not manager.accumulate || PHashhe.mem info.iworkhedge hedge then begin
-	PHashhe.remove info.iworkhedge hedge;
-	let tpredvertex = PSHGraph.predvertex graph hedge in
-	if is_tvertex graph tpredvertex then begin
-	  let attrhedge = PSHGraph.attrhedge graph hedge in
-	  let treach = treach_of_tvertex ~descend:false graph tpredvertex in
-	  let (arc,post) = manager.apply hedge treach in
-	  attrhedge.arc <- arc;
-	  if manager.print_postpre then av_print_contrib manager hedge post;
-	  if not (attrhedge.aempty && manager.is_bottom vertex post) then begin
-	    lpost := post :: !lpost;
-	    attrhedge.aempty <- false;
-	    attr.empty <- false;
-	  end
-	  else allpost := false;
-	end
-	else allpost := false;
+        PHashhe.remove info.iworkhedge hedge;
+        let tpredvertex = PSHGraph.predvertex graph hedge in
+        if is_tvertex graph tpredvertex then begin
+          let attrhedge = PSHGraph.attrhedge graph hedge in
+          let treach = treach_of_tvertex ~descend:false graph tpredvertex in
+          let (arc,post) = manager.apply hedge treach in
+          attrhedge.arc <- arc;
+          if manager.print_postpre then av_print_contrib manager hedge post;
+          if not (attrhedge.aempty && manager.is_bottom vertex post) then begin
+            lpost := post :: !lpost;
+            attrhedge.aempty <- false;
+            attr.empty <- false;
+          end
+          else allpost := false;
+        end
+        else allpost := false;
       end
       else allpost := false;
     end)
@@ -232,15 +232,15 @@ let accumulate_vertex
   let growing =
     match manager.odiff with
     | Some(diff) when manager.accumulate ->
-	let nabs = match !lpost with
-	  | [post] -> post
-	  | _ -> attr.reach
-	in
-	attr.diff <- diff vertex nabs oldreach;
-	not (manager.is_bottom vertex attr.diff)
+        let nabs = match !lpost with
+          | [post] -> post
+          | _ -> attr.reach
+        in
+        attr.diff <- diff vertex nabs oldreach;
+        not (manager.is_bottom vertex attr.diff)
     | _ ->
-	attr.diff <- attr.reach;
-	not (manager.is_leq vertex attr.reach oldreach)
+        attr.diff <- attr.reach;
+        not (manager.is_leq vertex attr.reach oldreach)
   in
   if manager.print_state then av_print_result manager graph vertex attr growing;
   growing
@@ -266,8 +266,8 @@ let pv_print_result manager graph vertex attr update =
     dot_graph manager graph
       ~vertex
       ~title:(
-	Print.sprintf "processed (prop) %a"
-	  manager.dot_vertex vertex
+        Print.sprintf "processed (prop) %a"
+          manager.dot_vertex vertex
       )
   ;
   ()
@@ -298,24 +298,24 @@ let propagate_vertex
       let tpredvertex = PSHGraph.predvertex graph hedge in
       let attrhedge = PSHGraph.attrhedge graph hedge in
       let takeit =
-	(if descend then not attrhedge.aempty else true)
-	&& is_tvertex graph tpredvertex
+        (if descend then not attrhedge.aempty else true)
+        && is_tvertex graph tpredvertex
       in
       if takeit then begin
-	PHashhe.remove info.iworkhedge hedge;
-	let treach = treach_of_tvertex ~descend graph tpredvertex in
-	let (arc,post) = manager.apply hedge treach in
-	attrhedge.arc <- arc;
-	if manager.print_postpre then av_print_contrib manager hedge post;
-	if not (manager.is_bottom vertex post) then begin
-	  lpost := post :: !lpost;
-	  attrhedge.aempty <- false
-	end
-	else
-	  attrhedge.aempty <- true;
+        PHashhe.remove info.iworkhedge hedge;
+        let treach = treach_of_tvertex ~descend graph tpredvertex in
+        let (arc,post) = manager.apply hedge treach in
+        attrhedge.arc <- arc;
+        if manager.print_postpre then av_print_contrib manager hedge post;
+        if not (manager.is_bottom vertex post) then begin
+          lpost := post :: !lpost;
+          attrhedge.aempty <- false
+        end
+        else
+          attrhedge.aempty <- true;
       end
       else
-	attrhedge.aempty <- true;
+        attrhedge.aempty <- true;
     end)
     lhedges
   ;
@@ -376,9 +376,9 @@ let process_vertex
       manager.canonical vertex attr.reach;
       attr.diff <- begin match manager.odiff with
       | Some(diff) when manager.accumulate ->
-	  diff vertex attr.reach oldreach;
+          diff vertex attr.reach oldreach;
       | _ ->
-	  attr.reach;
+          attr.reach;
       end;
       if manager.print_state then p_print_result manager graph vertex attr;
     end;
@@ -407,8 +407,8 @@ let d_print_step manager graph strategy counter =
       let vertex = svertex.vertex in
       let attrvertex = PSHGraph.attrvertex graph vertex in
       fprintf manager.print_fmt "  acc(%a)=%a@ "
-	manager.print_vertex vertex
-	manager.print_abstract attrvertex.reach
+        manager.print_vertex vertex
+        manager.print_abstract attrvertex.reach
     end)
     strategy
   ;
@@ -420,11 +420,11 @@ let d_print_result manager graph strategy =
   if true then begin
     Ilist.iter
       (begin fun _ _ svertex ->
-	let vertex = svertex.vertex in
-	let attrvertex = PSHGraph.attrvertex graph vertex in
-	fprintf manager.print_fmt "@   acc(%a) =%a"
-	  manager.print_vertex vertex
-	  manager.print_abstract attrvertex.reach
+        let vertex = svertex.vertex in
+        let attrvertex = PSHGraph.attrvertex graph vertex in
+        fprintf manager.print_fmt "@   acc(%a) =%a"
+          manager.print_vertex vertex
+          manager.print_abstract attrvertex.reach
       end)
       strategy
   end;
@@ -448,10 +448,10 @@ let descend_strategy
     then begin
       let attr = PSHGraph.attrvertex graph svertex.vertex in
       let reducing =
-	propagate_vertex ~descend:true manager graph svertex attr
+        propagate_vertex ~descend:true manager graph svertex attr
       in
       if reducing then begin
-	update_workingsets ~hedge:false graph svertex.vertex;
+        update_workingsets ~hedge:false graph svertex.vertex;
       end;
       if manager.print_workingsets then fprintf manager.print_fmt "  %a@ " (print_workingsets manager) graph;
       reducing
@@ -470,8 +470,8 @@ let descend_strategy
     (* Linear iteration on vertices of a strongly connected component *)
     Ilist.iter
       (begin fun _ _ svertex ->
-	let reducing2 = process_svertex svertex in
-	reducing := !reducing || reducing2
+        let reducing2 = process_svertex svertex in
+        reducing := !reducing || reducing2
       end)
       strategy
     ;
@@ -503,10 +503,10 @@ let descend
     PHashhe.clear info.iworkhedge;
     Ilist.iter
       (begin fun _ _ svertex ->
-	let vertex = svertex.vertex in
-	let attrvertex = PSHGraph.attrvertex graph vertex in
-	if not attrvertex.empty then
-	  PHashhe.replace info.iworkvertex vertex ()
+        let vertex = svertex.vertex in
+        let attrvertex = PSHGraph.attrvertex graph vertex in
+        if not attrvertex.empty then
+          PHashhe.replace info.iworkvertex vertex ()
       end)
       strategy
     ;
@@ -551,13 +551,13 @@ let s_print_step manager graph strategy nsteps growing =
       let vertex = strategy_vertex.vertex in
       let attrvertex = PSHGraph.attrvertex graph vertex in
       fprintf manager.print_fmt "  acc (%a)=%a@ "
-	manager.print_vertex vertex
-	manager.print_abstract attrvertex.reach
+        manager.print_vertex vertex
+        manager.print_abstract attrvertex.reach
       ;
       if manager.accumulate && manager.odiff<>None then
-	fprintf manager.print_fmt "@   diff(%a)=%a"
-	  manager.print_vertex vertex
-	  manager.print_abstract attrvertex.diff
+        fprintf manager.print_fmt "@   diff(%a)=%a"
+          manager.print_vertex vertex
+          manager.print_abstract attrvertex.diff
     end)
     strategy
   ;
@@ -574,16 +574,16 @@ let s_print_result ~depth manager graph strategy =
   if true then begin
     Ilist.iter
       (begin fun _ _ svertex ->
-	let vertex = svertex.vertex in
-	let attrvertex = PSHGraph.attrvertex graph vertex in
-	fprintf manager.print_fmt "@   acc (%a)=%a"
-	  manager.print_vertex vertex
-	  manager.print_abstract attrvertex.reach
-	;
-	if manager.accumulate && manager.odiff<>None then
-	  fprintf manager.print_fmt "@   diff(%a)=%a"
-	    manager.print_vertex vertex
-	    manager.print_abstract attrvertex.diff
+        let vertex = svertex.vertex in
+        let attrvertex = PSHGraph.attrvertex graph vertex in
+        fprintf manager.print_fmt "@   acc (%a)=%a"
+          manager.print_vertex vertex
+          manager.print_abstract attrvertex.reach
+        ;
+        if manager.accumulate && manager.odiff<>None then
+          fprintf manager.print_fmt "@   diff(%a)=%a"
+            manager.print_vertex vertex
+            manager.print_abstract attrvertex.diff
       end)
       strategy
   end;
@@ -599,16 +599,16 @@ let tops_print_result manager graph strategy =
   if true then begin
     Ilist.iter
       (begin fun _ _ svertex ->
-	let vertex = svertex.vertex in
-	let attrvertex = PSHGraph.attrvertex graph vertex in
-	fprintf manager.print_fmt "@   acc (%a)=%a"
-	  manager.print_vertex vertex
-	  manager.print_abstract attrvertex.reach
-	;
-	if manager.accumulate && manager.odiff<>None then
-	  fprintf manager.print_fmt "@   diff(%a)=%a"
-	    manager.print_vertex vertex
-	    manager.print_abstract attrvertex.diff
+        let vertex = svertex.vertex in
+        let attrvertex = PSHGraph.attrvertex graph vertex in
+        fprintf manager.print_fmt "@   acc (%a)=%a"
+          manager.print_vertex vertex
+          manager.print_abstract attrvertex.reach
+        ;
+        if manager.accumulate && manager.odiff<>None then
+          fprintf manager.print_fmt "@   diff(%a)=%a"
+            manager.print_vertex vertex
+            manager.print_abstract attrvertex.diff
       end)
       strategy
   end;
@@ -638,20 +638,20 @@ let rec process_strategy
   let rec parcours widening = function
     | [] -> ()
     | elt::rest ->
-	let res =
-	  begin match elt with
-	  | Ilist.Atome(strategy_vertex) ->
-	      if PHashhe.mem info.iworkvertex strategy_vertex.vertex then
-		process_vertex manager graph ~widening strategy_vertex
-	      else
-		false
-	  | Ilist.List(strategy) ->
-	      process_strategy manager graph ~depth:(depth+1) strategy
-	  end
-	in
-	growing := !growing || res;
-	loop := !loop || res;
-	parcours widening rest;
+        let res =
+          begin match elt with
+          | Ilist.Atome(strategy_vertex) ->
+              if PHashhe.mem info.iworkvertex strategy_vertex.vertex then
+                process_vertex manager graph ~widening strategy_vertex
+              else
+                false
+          | Ilist.List(strategy) ->
+              process_strategy manager graph ~depth:(depth+1) strategy
+          end
+        in
+        growing := !growing || res;
+        loop := !loop || res;
+        parcours widening rest;
   in
 
   if manager.print_component then s_print_intro ~depth manager graph strategy;
@@ -663,15 +663,15 @@ let rec process_strategy
     if not !loop && depth>=3 then begin
       (* if Bourdoncle technique, check working sets *)
       try
-	Ilist.iter
-	  (begin fun _ _ strategy_vertex ->
-	    if PHashhe.mem
-	      info.iworkvertex strategy_vertex.vertex
-	    then begin
-	      loop := true; raise Exit
-	    end
-	  end)
-	  strategy
+        Ilist.iter
+          (begin fun _ _ strategy_vertex ->
+            if PHashhe.mem
+              info.iworkvertex strategy_vertex.vertex
+            then begin
+              loop := true; raise Exit
+            end
+          end)
+          strategy
       with
       Exit -> ()
     end
@@ -702,28 +702,28 @@ let process_toplevel_strategy
   let rec parcours = function
     | [] -> ()
     | elt::rest ->
-	begin match elt with
-	| Ilist.Atome(strategy_vertex) ->
-	    if PHashhe.mem info.iworkvertex strategy_vertex.vertex then
-	      let growing =
-		process_vertex manager graph ~widening:false strategy_vertex
-	      in
-	      ggrowing := !ggrowing || growing
-	| Ilist.List(strategy) ->
-	    let growing =
-	      process_strategy manager graph ~depth:2 strategy
-	    in
-	    ggrowing := !ggrowing || growing;
-	    let reducing =
-	      if growing then
-		(* Descending *)
-		descend manager graph strategy
-	      else
-		false
-	    in
-	    greducing := !greducing || reducing
-	end;
-	parcours rest;
+        begin match elt with
+        | Ilist.Atome(strategy_vertex) ->
+            if PHashhe.mem info.iworkvertex strategy_vertex.vertex then
+              let growing =
+                process_vertex manager graph ~widening:false strategy_vertex
+              in
+              ggrowing := !ggrowing || growing
+        | Ilist.List(strategy) ->
+            let growing =
+              process_strategy manager graph ~depth:2 strategy
+            in
+            ggrowing := !ggrowing || growing;
+            let reducing =
+              if growing then
+                (* Descending *)
+                descend manager graph strategy
+              else
+                false
+            in
+            greducing := !greducing || reducing
+        end;
+        parcours rest;
   in
   if manager.print_component then tops_print_intro manager graph strategy;
   if manager.print_workingsets then fprintf manager.print_fmt "%a@ " (print_workingsets manager) graph;
@@ -757,9 +757,9 @@ let output_of_graph graph =
       (fun vertex attrvertex -> attrvertex.reach)
       (fun hedge attrhedge -> attrhedge.arc)
       (fun info -> {
-	time = !(info.itime);
-	ascending = info.iascending;
-	descending = info.idescending;
+        time = !(info.itime);
+        ascending = info.iascending;
+        descending = info.idescending;
       })
       graph
 
@@ -781,9 +781,9 @@ let analysis
     let info = PSHGraph.info graph in
     if manager.print_analysis then
       fprintf manager.print_fmt "... in@.    %a ascending iterations@.    %a descending iterations@.    stabilization:%b@.***@."
-	print_stat_iteration_ilist info.iascending
-	print_stat_iteration_ilist info.idescending
-	(not reducing)
+        print_stat_iteration_ilist info.iascending
+        print_stat_iteration_ilist info.idescending
+        (not reducing)
     ;
   end)
   ;
