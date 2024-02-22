@@ -19,7 +19,7 @@
  (name fixpoint)
  (synopsis "Fixpoint computation engine")
  (description "Fixpoint is an OCaml library implementing a generic fixpoint engine. The interface is parameterized by the abstract domain on which fixpoint computations are performed.")
- (depends ocaml dune camllib)
+ (depends ocaml dune camllib odoc)
  (tags
   (Fixpoint Graph "Abstract Interpretation")))
 

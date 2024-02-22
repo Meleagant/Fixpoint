@@ -15,7 +15,7 @@ depends: [
   "ocaml"
   "dune" {>= "3.7"}
   "camllib"
-  "odoc" {with-doc}
+  "odoc"
 ]
 build: [
   ["dune" "subst"] {dev}
