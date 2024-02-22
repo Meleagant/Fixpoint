@@ -1,0 +1,37 @@
+name: page
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: "4.14"
+
+      - name: pinning camllib
+        run: opam pin add git+https://github.com/jogiet/camllib.git#master
+
+      - name: install dependancies
+        run: opam install . --deps-only -y
+
+      - name: Build
+        run: opam exec -- dune build @doc
+
+      -
+        name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v4
+        with:
+          target_branch: gh-pages
+          build_dir: _build/default/_doc/_html/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
